@@ -17,7 +17,7 @@ lib.callback.register('advanced_trucking:server:getInitData', function(src)
     contracts=Contracts.GetVisible(src, profile),
     activeJob=ActiveJobs[identifier],
     missions=Missions.GetForPlayer(identifier),
-    leaderboard=Leaderboard.GetTop()
+    leaderboard=Leaderboard.Get()
   }
 end)
 
@@ -179,3 +179,20 @@ RegisterNetEvent('advanced_trucking:server:claimMissionReward', function(mission
   end
   Framework.Notify(src, 'Mission reward claimed.', 'success')
 end)
+
+
+lib.callback.register('advanced_trucking:server:getLeaderboard', function(_, category)
+  return Leaderboard.Get(category)
+end)
+
+RegisterCommand('trucking_refreshleaderboard', function(source)
+  local src = source
+  if src == 0 or IsPlayerAceAllowed(src, Config.Admin.AcePermission) then
+    Leaderboard.Refresh(true)
+    if src ~= 0 then
+      Framework.Notify(src, 'Leaderboard refreshed.', 'success')
+    else
+      print('[advanced_trucking] Leaderboard refreshed.')
+    end
+  end
+end, true)

@@ -120,7 +120,7 @@
       align-items: center;
     }
 
-    .contracts {
+    .sözleşme {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 12px;
@@ -168,11 +168,11 @@
     <header class="header">
       <div class="brand">
         <h1>ADVANCED TRUCKING // LOGISTICS TABLET</h1>
-        <p>Modern dispatch, contracts & driver progression</p>
+        <p>Modern sevkiyat, sözleşmeler ve sürücü gelişimi</p>
       </div>
       <div class="actions">
-        <button onclick="requestData()">Refresh</button>
-        <button class="btn-danger" onclick="post('closeTablet')">Close</button>
+        <button onclick="requestData()">Yenile</button>
+        <button class="btn-danger" onclick="post('closeTablet')">Kapat</button>
       </div>
     </header>
 
@@ -180,14 +180,14 @@
       <aside class="sidebar">
         <div id="profile" class="card profile"></div>
         <div class="card">
-          <h2 style="font-size:.94rem; margin-bottom:8px">Active Job</h2>
-          <div id="activeJob" class="muted">No active contract.</div>
+          <h2 style="font-size:.94rem; margin-bottom:8px">Aktif İş</h2>
+          <div id="activeJob" class="muted">Aktif sözleşme yok.</div>
         </div>
       </aside>
 
       <main class="main">
         <div class="section-title">
-          <h2>Available Contracts</h2>
+          <h2>Mevcut Sözleşmeler</h2>
           <span id="contractCount" class="muted"></span>
         </div>
         <section id="contracts" class="contracts"></section>
@@ -212,13 +212,13 @@
 
     function profileTemplate(profile = {}) {
       return `
-        <h2>${profile.name || 'Unknown Driver'}</h2>
-        <div class="muted">Level ${profile.level || 1} • Reputation ${profile.reputation ?? 50}/100</div>
+        <h2>${profile.name || 'Bilinmeyen Sürücü'}</h2>
+        <div class="muted">Seviye ${profile.level || 1} • İtibar ${profile.reputation ?? 50}/100</div>
         <div class="stats">
           <div class="stat"><div class="label">XP</div><div class="value">${profile.xp || 0}</div></div>
-          <div class="stat"><div class="label">Deliveries</div><div class="value">${profile.completed_deliveries || 0}</div></div>
-          <div class="stat"><div class="label">Distance</div><div class="value">${Number(profile.total_distance || 0).toFixed(1)} km</div></div>
-          <div class="stat"><div class="label">Earnings</div><div class="value">${fmtCash(profile.total_earnings)}</div></div>
+          <div class="stat"><div class="label">Teslimat</div><div class="value">${profile.completed_deliveries || 0}</div></div>
+          <div class="stat"><div class="label">Mesafe</div><div class="value">${Number(profile.total_distance || 0).toFixed(1)} km</div></div>
+          <div class="stat"><div class="label">Kazanç</div><div class="value">${fmtCash(profile.total_earnings)}</div></div>
         </div>
       `;
     }
@@ -228,19 +228,19 @@
       return `
         <article class="contract ${locked ? 'locked' : ''}">
           <h3>${c.label || c.id}</h3>
-          <div class="muted">${c.id} • ${c.cargoType || 'general'}</div>
+          <div class="muted">${c.id} • ${c.cargoType || 'genel'}</div>
           <div>
             <span class="badge">${(c.risk || 'low').toUpperCase()}</span>
             <span class="badge">${(c.difficulty || 'normal').toUpperCase()}</span>
             <span class="badge">Lvl ${c.requiredLevel || 1}</span>
           </div>
-          <div class="row"><span>Distance</span><span>${Number(c.distance || 0).toFixed(1)} km</span></div>
-          <div class="row"><span>ETA</span><span>${c.estimatedTime || 0} min</span></div>
-          <div class="row"><span>Deadline</span><span>${c.deadlineMinutes || 0} min</span></div>
+          <div class="row"><span>Mesafe</span><span>${Number(c.distance || 0).toFixed(1)} km</span></div>
+          <div class="row"><span>Tahmini Süre</span><span>${c.estimatedTime || 0} min</span></div>
+          <div class="row"><span>Son Teslim</span><span>${c.deadlineMinutes || 0} min</span></div>
           <div class="pay">${fmtCash(c.basePayment)}</div>
           <div style="margin-top:10px">
             <button class="btn-primary" ${locked ? 'disabled' : ''} onclick="startContract('${c.id}')">
-              ${locked ? 'Locked' : 'Start Contract'}
+              ${locked ? 'Kilitli' : 'Sözleşmeyi Başlat'}
             </button>
           </div>
         </article>
@@ -251,16 +251,16 @@
       document.getElementById('profile').innerHTML = profileTemplate(state.profile || {});
 
       const activeJob = state.activeJob
-        ? `${state.activeJob.contractId || 'Unknown'} • Started ${new Date((state.activeJob.startedAt || 0) * 1000).toLocaleTimeString()}`
-        : 'No active contract.';
+        ? `${state.activeJob.contractId || 'Bilinmiyor'} • Başlangıç ${new Date((state.activeJob.startedAt || 0) * 1000).toLocaleTimeString()}`
+        : 'Aktif sözleşme yok.';
       document.getElementById('activeJob').textContent = activeJob;
 
       const contractsNode = document.getElementById('contracts');
       const contracts = state.contracts || [];
-      document.getElementById('contractCount').textContent = `${contracts.length} contracts`;
+      document.getElementById('contractCount').textContent = `${contracts.length} sözleşme`;
 
       if (!contracts.length) {
-        contractsNode.innerHTML = '<div class="empty">No available contracts right now.</div>';
+        contractsNode.innerHTML = '<div class="empty">Şu anda uygun sözleşme yok.</div>';
         return;
       }
 
@@ -287,7 +287,7 @@
       } else if (message.action === 'closeTablet') {
         document.body.style.display = 'none';
       } else if (message.action === 'deliveryReport') {
-        alert(`Delivery Complete\nFinal Payment: ${fmtCash(message.payload?.payment?.final || 0)}`);
+        alert(`Teslimat Tamamlandı\nNihai Ödeme: ${fmtCash(message.payload?.payment?.final || 0)}`);
       }
     });
   </script>
