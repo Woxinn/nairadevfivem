@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced Trucking Tablet</title>
+  <style>
+    :root {
+      --bg: #070b14;
+      --panel: #101726;
+      --panel-2: #151f33;
+      --text: #eaf1ff;
+      --muted: #9fb1d0;
+      --accent: #5da7ff;
+      --success: #49d597;
+      --danger: #ff6a8d;
+      --border: rgba(255,255,255,.08);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      display: none;
+      min-height: 100vh;
+      font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 8% 12%, rgba(93,167,255,.16), transparent 28%),
+        radial-gradient(circle at 85% 90%, rgba(73,213,151,.12), transparent 28%),
+        var(--bg);
+      padding: 24px;
+    }
+
+    .tablet {
+      max-width: 1260px;
+      margin: 0 auto;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: linear-gradient(155deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,15,26,.85);
+    }
+
+    .brand h1 { font-size: 1.05rem; letter-spacing: .4px; }
+    .brand p { font-size: .8rem; color: var(--muted); margin-top: 4px; }
+
+    .actions { display: flex; gap: 10px; }
+    button {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 9px 14px;
+      cursor: pointer;
+      transition: .2s ease;
+      font-weight: 600;
+    }
+    button:hover { transform: translateY(-1px); border-color: rgba(93,167,255,.45); }
+    .btn-primary { background: linear-gradient(135deg, #3e7cff, #5da7ff); border: none; }
+    .btn-danger { background: linear-gradient(135deg, #d04f72, #ff6a8d); border: none; }
+
+    .content {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      min-height: 700px;
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--border);
+      padding: 18px;
+      background: rgba(10,16,28,.75);
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .profile h2 { font-size: 1.05rem; margin-bottom: 8px; }
+    .muted { color: var(--muted); font-size: .86rem; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .stat {
+      background: #0f1628;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .stat .label { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .4px; }
+    .stat .value { font-size: 1rem; margin-top: 4px; font-weight: 700; }
+
+    .main {
+      padding: 18px;
+      background: rgba(8,13,23,.6);
+    }
+
+    .section-title {
+      font-size: 1rem;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sözleşme {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 12px;
+    }
+
+    .contract {
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #121c2f, #101726);
+      padding: 14px;
+      position: relative;
+    }
+    .contract.locked { opacity: .58; }
+    .badge {
+      display: inline-block;
+      font-size: .72rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 3px 8px;
+      border-radius: 999px;
+      margin-right: 6px;
+      margin-top: 6px;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: .84rem;
+    }
+    .contract h3 { font-size: 1rem; margin-bottom: 5px; }
+    .pay { font-size: 1.1rem; font-weight: 800; color: var(--success); margin-top: 10px; }
+
+    .empty {
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      padding: 25px;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="tablet">
+    <header class="header">
+      <div class="brand">
+        <h1>ADVANCED TRUCKING // LOGISTICS TABLET</h1>
+        <p>Modern sevkiyat, sözleşmeler ve sürücü gelişimi</p>
+      </div>
+      <div class="actions">
+        <button onclick="requestData()">Yenile</button>
+        <button class="btn-danger" onclick="post('closeTablet')">Kapat</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <aside class="sidebar">
+        <div id="profile" class="card profile"></div>
+        <div class="card">
+          <h2 style="font-size:.94rem; margin-bottom:8px">Aktif İş</h2>
+          <div id="activeJob" class="muted">Aktif sözleşme yok.</div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="section-title">
+          <h2>Mevcut Sözleşmeler</h2>
+          <span id="contractCount" class="muted"></span>
+        </div>
+        <section id="contracts" class="contracts"></section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    let state = { profile: null, contracts: [], activeJob: null };
+
+    function post(name, data = {}) {
+      return fetch(`https://${GetParentResourceName()}/${name}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+    }
+
+    function fmtCash(v = 0) {
+      return '$' + Number(v || 0).toLocaleString();
+    }
+
+    function profileTemplate(profile = {}) {
+      return `
+        <h2>${profile.name || 'Bilinmeyen Sürücü'}</h2>
+        <div class="muted">Seviye ${profile.level || 1} • İtibar ${profile.reputation ?? 50}/100</div>
+        <div class="stats">
+          <div class="stat"><div class="label">XP</div><div class="value">${profile.xp || 0}</div></div>
+          <div class="stat"><div class="label">Teslimat</div><div class="value">${profile.completed_deliveries || 0}</div></div>
+          <div class="stat"><div class="label">Mesafe</div><div class="value">${Number(profile.total_distance || 0).toFixed(1)} km</div></div>
+          <div class="stat"><div class="label">Kazanç</div><div class="value">${fmtCash(profile.total_earnings)}</div></div>
+        </div>
+      `;
+    }
+
+    function contractTemplate(c) {
+      const locked = !!c.locked;
+      return `
+        <article class="contract ${locked ? 'locked' : ''}">
+          <h3>${c.label || c.id}</h3>
+          <div class="muted">${c.id} • ${c.cargoType || 'genel'}</div>
+          <div>
+            <span class="badge">${(c.risk || 'low').toUpperCase()}</span>
+            <span class="badge">${(c.difficulty || 'normal').toUpperCase()}</span>
+            <span class="badge">Lvl ${c.requiredLevel || 1}</span>
+          </div>
+          <div class="row"><span>Mesafe</span><span>${Number(c.distance || 0).toFixed(1)} km</span></div>
+          <div class="row"><span>Tahmini Süre</span><span>${c.estimatedTime || 0} min</span></div>
+          <div class="row"><span>Son Teslim</span><span>${c.deadlineMinutes || 0} min</span></div>
+          <div class="pay">${fmtCash(c.basePayment)}</div>
+          <div style="margin-top:10px">
+            <button class="btn-primary" ${locked ? 'disabled' : ''} onclick="startContract('${c.id}')">
+              ${locked ? 'Kilitli' : 'Sözleşmeyi Başlat'}
+            </button>
+          </div>
+        </article>
+      `;
+    }
+
+    function render() {
+      document.getElementById('profile').innerHTML = profileTemplate(state.profile || {});
+
+      const activeJob = state.activeJob
+        ? `${state.activeJob.contractId || 'Bilinmiyor'} • Başlangıç ${new Date((state.activeJob.startedAt || 0) * 1000).toLocaleTimeString()}`
+        : 'Aktif sözleşme yok.';
+      document.getElementById('activeJob').textContent = activeJob;
+
+      const contractsNode = document.getElementById('contracts');
+      const contracts = state.contracts || [];
+      document.getElementById('contractCount').textContent = `${contracts.length} sözleşme`;
+
+      if (!contracts.length) {
+        contractsNode.innerHTML = '<div class="empty">Şu anda uygun sözleşme yok.</div>';
+        return;
+      }
+
+      contractsNode.innerHTML = contracts.map(contractTemplate).join('');
+    }
+
+    function requestData() {
+      post('requestData', {}).then(r => r.json()).then(data => {
+        state = data || state;
+        render();
+      });
+    }
+
+    function startContract(contractId) {
+      post('startContract', { contractId, mode: 'company' });
+    }
+
+    window.addEventListener('message', (event) => {
+      const message = event.data;
+      if (message.action === 'openTablet') {
+        document.body.style.display = 'block';
+        state = message.payload || state;
+        render();
+      } else if (message.action === 'closeTablet') {
+        document.body.style.display = 'none';
+      } else if (message.action === 'deliveryReport') {
+        alert(`Teslimat Tamamlandı\nNihai Ödeme: ${fmtCash(message.payload?.payment?.final || 0)}`);
+      }
+    });
+  </script>
+</body>
+</html>
