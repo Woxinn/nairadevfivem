@@ -1,3 +1,21 @@
+
+CreateThread(function()
+  for _, depot in pairs(Config.Depots) do
+    local b = depot.blip
+    if b and b.enabled then
+      local blip = AddBlipForCoord(depot.coords.x, depot.coords.y, depot.coords.z)
+      SetBlipSprite(blip, b.sprite or 477)
+      SetBlipDisplay(blip, 4)
+      SetBlipScale(blip, b.scale or 0.8)
+      SetBlipColour(blip, b.color or 5)
+      SetBlipAsShortRange(blip, true)
+      BeginTextCommandSetBlipName('STRING')
+      AddTextComponentString(b.label or depot.label or 'Trucking Depot')
+      EndTextCommandSetBlipName(blip)
+    end
+  end
+end)
+
 Markers = { nearDepot = nil }
 
 local function drawText3D(coords, text)
