@@ -1,0 +1,44 @@
+UI = {open=false}
+
+function UI.Open(payload)
+  UI.open=true
+  SetNuiFocus(true,true)
+  SendNUIMessage({action='openTablet',payload=payload})
+end
+
+function UI.Close()
+  UI.open=false
+  SetNuiFocus(false,false)
+  SendNUIMessage({action='closeTablet'})
+end
+
+RegisterNUICallback('closeTablet', function(_, cb) UI.Close() cb({ok=true}) end)
+RegisterNUICallback('requestData', function(_, cb)
+  lib.callback('advanced_trucking:server:getInitData', false, function(data) cb(data) end)
+end)
+RegisterNUICallback('requestMissions', function(_, cb)
+  lib.callback('advanced_trucking:server:getMissions', false, function(data) cb(data or {daily={}, weekly={}}) end)
+end)
+RegisterNUICallback('claimMissionReward', function(data, cb)
+  TriggerServerEvent('advanced_trucking:server:claimMissionReward', data.missionId, data.period)
+  cb({ok=true})
+end)
+RegisterNUICallback('requestLicenses', function(_, cb)
+  lib.callback('advanced_trucking:server:getLicenses', false, function(data) cb(data or {}) end)
+end)
+RegisterNUICallback('buyLicense', function(data, cb)
+  TriggerServerEvent('advanced_trucking:server:buyLicense', data.license)
+  cb({ok=true})
+end)
+RegisterNUICallback('startContract', function(data, cb)
+  TriggerServerEvent('advanced_trucking:server:startContract', data.contractId, data.mode)
+  cb({ok=true})
+end)
+RegisterNUICallback('pickupCargo', function(data, cb)
+  TriggerServerEvent('advanced_trucking:server:pickupCargo', data.token, data.truckNet, data.trailerNet)
+  cb({ok=true})
+end)
+RegisterNUICallback('deliver', function(data, cb)
+  TriggerServerEvent('advanced_trucking:server:deliver', data.token, data.truckNet, data.trailerNet)
+  cb({ok=true})
+end)
